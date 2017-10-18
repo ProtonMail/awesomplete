@@ -9,7 +9,7 @@
 
 var _ = function (input, o) {
 	var me = this;
-    
+
     // Keep track of number of instances for unique IDs
     Awesomplete.count = (Awesomplete.count || 0) + 1;
     this.count = Awesomplete.count;
@@ -33,7 +33,8 @@ var _ = function (input, o) {
 		filter: _.FILTER_CONTAINS,
 		sort: o.sort === false ? false : _.SORT_BYLENGTH,
 		item: _.ITEM,
-		replace: _.REPLACE
+		replace: _.REPLACE,
+		ul: undefined
 	}, o);
 
 	this.index = -1;
@@ -45,7 +46,8 @@ var _ = function (input, o) {
 		around: input
 	});
 
-	this.ul = $.create("ul", {
+	// Prevent unnecessary dom manipulation
+	this.ul = this.ul || $.create("ul", {
 		hidden: "hidden",
         role: "listbox",
         id: "awesomplete_list_" + this.count,
@@ -245,9 +247,9 @@ _.prototype = {
 
 		if (i > -1 && lis.length > 0) {
 			lis[i].setAttribute("aria-selected", "true");
-            
+
 			this.status.textContent = lis[i].textContent + ", list item " + (i + 1) + " of " + lis.length;
-            
+
             this.input.setAttribute("aria-activedescendant", this.ul.id + "_item_" + this.index);
 
 			// scroll to highlighted element in case parent's height is fixed
@@ -312,20 +314,20 @@ _.prototype = {
 				});
 
 			if (this.ul.children.length === 0) {
-                
+
                 this.status.textContent = "No results found";
-                
+
 				this.close({ reason: "nomatches" });
-        
+
 			} else {
 				this.open();
-        
+
                 this.status.textContent = this.ul.children.length + " results found";
 			}
 		}
 		else {
 			this.close({ reason: "nomatches" });
-            
+
                 this.status.textContent = "No results found";
 		}
 	}
